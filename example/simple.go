@@ -6,11 +6,11 @@ import (
 )
 
 func main() {
-	c, e := discord.Create("test@here.com", "password")
+	c, e := discord.Create("email", "password")
+
 	if e != nil {
 		panic(e.Error())
 	}
 
-	fmt.Println("Simple example", c)
-
+	fmt.Println(c.Session.Token)
 }
