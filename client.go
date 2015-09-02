@@ -25,9 +25,62 @@ type RestClient struct {
 }
 
 type Session struct {
+	Id       string
 	Email    string
 	Password string
 	Token    string
+}
+
+type Guild struct {
+	Afk_timeout      int
+	Joined_at        string
+	Afk_channel_id   string
+	Id               string
+	Icon             string
+	Name             string
+	Roles            []Role
+	Region           string
+	Embed_channel_id string
+	Embed_enabled    string
+	Owner_id         string
+}
+
+type Role struct {
+	Permissions string
+	Id          string
+	Name        string
+}
+
+type Channel struct {
+	Guild_id              string
+	Name                  string
+	Permission_overwrites string
+	Position              int
+	Last_message_id       string
+	Type                  string
+	Id                    string
+	Is_private            string
+}
+
+type Message struct {
+	Attachments      string
+	Tts              bool
+	Embeds           string
+	Timestamp        string
+	Mention_everyone bool
+	Id               string
+	Edited_timestamp string
+	Author           *Author
+	Content          string
+	Channel_id       string
+	Mentions         string
+}
+
+type Author struct {
+	Username      string
+	Discriminator string
+	Id            string
+	Avatar        string
 }
 
 // Create takes an email and password then prepares a RestClient with the given data,
@@ -41,14 +94,17 @@ func Create(email string, password string) (restClient *RestClient, e error) {
 		e = errors.New("password too short")
 		return
 	}
-	session := &Session{email, password, ""}
+	session := &Session{"0", email, password, ""}
 	httpClient := &http.Client{Timeout: (20 * time.Second)}
 	restClient = &RestClient{discordUrl, session, httpClient}
 	restClient.Session.Token, e = requestToken(restClient)
 	if e != nil {
 		return
 	}
-
+	restClient.Session.Id, e = requestSelf(restClient)
+	if e != nil {
+		return
+	}
 	return
 }
 
@@ -85,5 +141,107 @@ func requestToken(restClient *RestClient) (token string, e error) {
 	session := &Session{}
 	e = json.Unmarshal(body, &session)
 	token = session.Token
+	return
+}
+
+// Identify user himself
+func requestSelf(restClient *RestClient) (clientId string, e error) {
+	req, e := http.NewRequest("GET", fmt.Sprintf("%s/%s", restClient.Url, "users/@me"), bytes.NewBuffer([]byte(fmt.Sprintf(``))))
+	if e != nil {
+		return
+	}
+	req.Header.Set("authorization", restClient.Session.Token)
+	req.Header.Set("Content-Type", "application/json")
+	resp, e := restClient.client.Do(req)
+	if e != nil {
+		return
+	}
+	defer resp.Body.Close()
+
+	body, _ := ioutil.ReadAll(resp.Body)
+
+	if resp.StatusCode != 200 {
+		e = errors.New(fmt.Sprintf("StatusCode: %d, %s", resp.StatusCode, string(body)))
+		return
+	}
+	session := &Session{}
+	e = json.Unmarshal(body, &session)
+	clientId = session.Id
+	return
+}
+
+func ListGuilds(restClient *RestClient) (guilds []Guild, e error) {
+
+	req, e := http.NewRequest("GET", fmt.Sprintf("%s/%s", restClient.Url, fmt.Sprintf("users/%s/guilds", restClient.Session.Id)), bytes.NewBuffer([]byte(fmt.Sprintf(``))))
+	if e != nil {
+		return
+	}
+	req.Header.Set("authorization", restClient.Session.Token)
+	req.Header.Set("Content-Type", "application/json")
+	resp, e := restClient.client.Do(req)
+	if e != nil {
+		return
+	}
+	defer resp.Body.Close()
+
+	body, _ := ioutil.ReadAll(resp.Body)
+	if resp.StatusCode != 200 {
+		e = errors.New(fmt.Sprintf("StatusCode: %d, %s", resp.StatusCode, string(body)))
+		return
+	}
+
+	e = json.Unmarshal(body, &guilds)
+	return
+}
+
+func ListChannels(restClient *RestClient, guildId string) (channels []Channel, e error) {
+	req, e := http.NewRequest("GET", fmt.Sprintf("%s/%s", restClient.Url, fmt.Sprintf("guilds/%s/channels", guildId)), bytes.NewBuffer([]byte(fmt.Sprintf(``))))
+	if e != nil {
+		return
+	}
+	req.Header.Set("authorization", restClient.Session.Token)
+	req.Header.Set("Content-Type", "application/json")
+	resp, e := restClient.client.Do(req)
+	if e != nil {
+		return
+	}
+	defer resp.Body.Close()
+
+	body, _ := ioutil.ReadAll(resp.Body)
+	if resp.StatusCode != 200 {
+		e = errors.New(fmt.Sprintf("StatusCode: %d, %s", resp.StatusCode, string(body)))
+		return
+	}
+
+	e = json.Unmarshal(body, &channels)
+	return
+}
+
+func SendMessage(restClient *RestClient, channelId string, message string) (responseMessage Message, e error) {
+	req, e := http.NewRequest("POST", fmt.Sprintf("%s/%s", restClient.Url, fmt.Sprintf("channels/%s/messages", channelId)), bytes.NewBuffer([]byte(fmt.Sprintf(`{"content":"%s"}`, message))))
+	if e != nil {
+		return
+	}
+	req.Header.Set("authorization", restClient.Session.Token)
+	req.Header.Set("Content-Type", "application/json")
+	resp, e := restClient.client.Do(req)
+	if e != nil {
+		return
+	}
+	defer resp.Body.Close()
+
+	fmt.Println("response Status:", resp.Status)
+	fmt.Println("response Headers:", resp.Header)
+
+	body, _ := ioutil.ReadAll(resp.Body)
+	fmt.Println("response Body:", string(body))
+	if resp.StatusCode != 200 {
+		e = errors.New(fmt.Sprintf("StatusCode: %d, %s", resp.StatusCode, string(body)))
+		return
+	}
+
+	e = json.Unmarshal(body, &responseMessage)
+
+	fmt.Println(string(body))
 	return
 }
