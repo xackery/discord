@@ -47,6 +47,12 @@ func TestClient(t *testing.T) {
 		return
 	}
 
+	err = discord.Close(restClient)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
 	fmt.Println("Done", guildId, channelId)
 	return
 }

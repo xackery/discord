@@ -246,16 +246,39 @@ func SendMessage(restClient *RestClient, channelId int, message string) (respons
 	if err != nil {
 		return
 	}
-
 	resp.Body.Close()
 
-	fmt.Println(string(body))
 	if resp.StatusCode != 200 {
 		err = errors.New(fmt.Sprintf("StatusCode: %d, %s", resp.StatusCode, string(body)))
 		return
 	}
 
 	err = json.Unmarshal(body, &responseMessage)
+	return
+}
+
+func Close(restClient *RestClient) (err error) {
+	req, err := http.NewRequest("POST", fmt.Sprintf("%s/%s", restClient.Url, fmt.Sprintf("auth/logout")), bytes.NewBuffer([]byte(fmt.Sprintf(``))))
+	if err != nil {
+		return
+	}
+	req.Header.Set("authorization", restClient.Session.Token)
+	req.Header.Set("Content-Type", "application/json")
+	resp, err := restClient.client.Do(req)
+	if err != nil {
+		return
+	}
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return
+	}
+	resp.Body.Close()
+
+	if resp.StatusCode != 204 && resp.StatusCode != 200 {
+		err = errors.New(fmt.Sprintf("StatusCode: %d, %s", resp.StatusCode, string(body)))
+		return
+	}
 	return
 }
 
