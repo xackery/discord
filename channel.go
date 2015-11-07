@@ -40,6 +40,7 @@ func (c *Client) ChannelMessageSend(channelId int, messageText string) (response
 		err = errors.New("You must be logged in")
 		return
 	}
+	//Create a POST request
 	httpClient := &http.Client{Timeout: (20 * time.Second)}
 	req, err := http.NewRequest("POST", fmt.Sprintf("%s/%s", DISCORD_URL, fmt.Sprintf("channels/%d/messages", channelId)), bytes.NewBuffer([]byte(fmt.Sprintf(`{"content":"%s"}`, messageText))))
 	if err != nil {
@@ -62,7 +63,7 @@ func (c *Client) ChannelMessageSend(channelId int, messageText string) (response
 		err = fmt.Errorf("StatusCode: %d, %s", resp.StatusCode, string(body))
 		return
 	}
-
+	//unmarshal body into responseMessage
 	err = json.Unmarshal(body, &responseMessage)
 	return
 }

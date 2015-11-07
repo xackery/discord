@@ -18,6 +18,7 @@ type Client struct {
 	OnMessageCreate  func(Event, Message)
 	OnPresenceStart  func(Event, Presence)
 	OnPresenceUpdate func(Event, Presence)
+	isListening      bool
 }
 
 //Login Method for Discord
