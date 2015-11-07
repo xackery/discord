@@ -3,6 +3,8 @@ A Discord API for Golang
 
 [![Go report](http://goreportcard.com/badge/xackery/discord)](http://goreportcard.com/report/xackery/discord)
 
+
+[![Build Status](https://travis-ci.org/Xackery/discord.svg)](https://travis-ci.org/Xackery/discord.svg?branch=master)
 Features
 ---
 * Logs in
