@@ -13,8 +13,6 @@ import (
 	"time"
 )
 
-//Majority of this code is heavy credits to github.com/gdraynz/go-discord/
-
 //Listen to websocket connection
 func (c *Client) Listen() (err error) {
 	if !c.IsLoggedIn() {
