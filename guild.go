@@ -11,17 +11,17 @@ import (
 )
 
 type Guild struct {
-	Afk_timeout      int
-	Joined_at        string
-	Afk_channel_id   int `json:",string,omitempty"`
-	Id               int `json:",string,omitempty"`
-	Icon             int `json:"omitempty"`
-	Name             string
-	Roles            []Role
-	Region           string
-	Embed_channel_id int `json:",string,omitempty"`
-	Embed_enabled    bool
-	Owner_id         int `json:",string,omitempty"`
+	AfkTimeout     int
+	JoinedAt       string
+	AfkChannelID   int `json:",string,omitempty"`
+	Id             int `json:",string,omitempty"`
+	Icon           int `json:"omitempty"`
+	Name           string
+	Roles          []Role
+	Region         string
+	EmbedChannelID int `json:",string,omitempty"`
+	EmbedEnabled   bool
+	OwnerID        int `json:",string,omitempty"`
 }
 
 type Role struct {

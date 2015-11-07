@@ -42,17 +42,17 @@ type PermissionOverwrites struct {
 }
 
 type Message struct {
-	Attachments      []Attachment
-	Tts              bool
-	Embeds           []Embed
-	Timestamp        string
-	Mention_everyone bool
-	Id               int `json:",string,omitempty"`
-	Edited_timestamp string
-	Author           *Author
-	Content          string
-	Channel_id       int `json:",string,omitempty"`
-	Mentions         []Mention
+	Attachments     []Attachment
+	Tts             bool
+	Embeds          []Embed
+	Timestamp       string
+	MentionEveryone bool
+	Id              int `json:",string,omitempty"`
+	EditedTimestamp string
+	Author          *Author
+	Content         string
+	ChannelID       int `json:",string,omitempty"`
+	Mentions        []Mention
 }
 
 func (c Client) ChannelMessageSend(channelId int, messageText string) (responseMessage Message, err error) {
