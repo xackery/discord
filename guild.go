@@ -12,17 +12,22 @@ import (
 
 //A guild are basically servers on Discord
 type Guild struct {
-	AfkTimeout     int
+	VoiceStates    []VoiceState //Used by Websocket
 	JoinedAt       string
-	AfkChannelID   int `json:",string,omitempty"`
-	Id             int `json:",string,omitempty"`
+	AfkChannelID   int `json:"afk_channel_id,string,omitempty"`
+	AfkTimeout     int
+	ID             int `json:"id,string,omitempty"`
 	Icon           int `json:"omitempty"`
 	Name           string
 	Roles          []Role
 	Region         string
-	EmbedChannelID int `json:",string,omitempty"`
+	Presences      []Presence //Used by Websocket
+	EmbedChannelID int        `json:"embed_channel_id,string,omitempty"`
 	EmbedEnabled   bool
-	OwnerID        int `json:",string,omitempty"`
+	OwnerID        int `json:"owner_id,string,omitempty"`
+	Members        []Member
+	Large          bool      //Used by Websocket
+	Channels       []Channel //Used by Websocket
 }
 
 //Roles are permission groupings
@@ -32,8 +37,27 @@ type Role struct {
 	Color       int
 	Hoist       bool
 	Position    int
-	Id          int `json:",string"`
+	ID          int `json:"id,string"`
 	Permissions int
+}
+
+type VoiceState struct {
+	UserID    int `json:"string"`
+	Suppress  bool
+	SessionID string `json:"session_id"`
+	SelfMute  bool
+	SelfDeaf  bool
+	Mute      bool
+	Deaf      bool
+	ChannelID int `json:"channel_id,string"`
+}
+
+type Member struct {
+	User     User
+	Roles    []string
+	Mute     bool
+	JoinedAt string
+	Deaf     bool
 }
 
 //List channels found on given guildId
