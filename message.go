@@ -28,6 +28,32 @@ type Attachment struct {
 
 //Embedded media array entry
 type Embed struct {
+	Author      Author
+	Description string
+	Provider    Provider
+	Thumbnail   Thumbnail
+	Title       string
+	Type        string
+	Url         string
+	Video       Video
+}
+
+type Video struct {
+	Height int
+	Url    string
+	Width  int
+}
+
+type Thumbnail struct {
+	Height   int
+	ProxyUrl string
+	Url      string
+	Width    int
+}
+
+type Provider struct {
+	Name string
+	Url  string
 }
 
 //An author of a message
