@@ -1,5 +1,7 @@
-# discord-go
+# discord
 A Discord API for Golang
+
+[![Go report](http://goreportcard.com/badge/xackery/discord)](http://goreportcard.com/report/xackery/discord)
 
 Features
 ---
