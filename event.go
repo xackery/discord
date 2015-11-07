@@ -10,6 +10,7 @@ type Event struct {
 	Type      string          `json:"t"`
 	State     int             `json:"s"`
 	Operation int             `json:"o"`
+	Direction int             `json:"dir"` //Direction of command, 0-received, 1-sent
 	RawData   json.RawMessage `json:"d"`
 }
 
@@ -47,6 +48,106 @@ func (c *Client) handleEvent(msgType int, msgData []byte) {
 		}
 		//log.Println("Size of guilds:", len(ready.Guilds), "members:", len(ready.Guilds[0].Members))
 		c.handleReady(event, ready)
+	case "GUILD_CREATE":
+		var guildCreateEvent GuildCreateEvent
+		err := json.Unmarshal(event.RawData, &guildCreateEvent)
+		if err != nil {
+			log.Println("Error Ready Parse:", err.Error())
+			return
+		}
+		if c.OnTypingStart != nil {
+			c.OnGuildCreate(event, guildCreateEvent)
+		}
+	case "GUILD_DELETE":
+		var guildDeleteEvent GuildDeleteEvent
+		err := json.Unmarshal(event.RawData, &guildDeleteEvent)
+		if err != nil {
+			log.Println("Error Ready Parse:", err.Error())
+			return
+		}
+		if c.OnTypingStart != nil {
+			c.OnGuildDelete(event, guildDeleteEvent)
+		}
+	case "GUILD_INTEGRATIONS_UPDATE":
+		var guildMemberEvent GuildMemberEvent
+		err := json.Unmarshal(event.RawData, &guildMemberEvent)
+		if err != nil {
+			log.Println("Error Ready Parse:", err.Error())
+			return
+		}
+		if c.OnTypingStart != nil {
+			c.OnGuildIntegrationsUpdate(event, guildMemberEvent)
+		}
+	case "GUILD_MEMBER_ADD":
+		var guildMemberEvent GuildMemberEvent
+		err := json.Unmarshal(event.RawData, &guildMemberEvent)
+		if err != nil {
+			log.Println("Error Ready Parse:", err.Error())
+			return
+		}
+		if c.OnTypingStart != nil {
+			c.OnGuildMemberAdd(event, guildMemberEvent)
+		}
+	case "GUILD_MEMBER_UPDATE":
+		var guildMemberEvent GuildMemberEvent
+		err := json.Unmarshal(event.RawData, &guildMemberEvent)
+		if err != nil {
+			log.Println("Error Ready Parse:", err.Error())
+			return
+		}
+		if c.OnTypingStart != nil {
+			c.OnGuildMemberUpdate(event, guildMemberEvent)
+		}
+	case "GUILD_MEMBER_REMOVE":
+		var guildMemberEvent GuildMemberEvent
+		err := json.Unmarshal(event.RawData, &guildMemberEvent)
+		if err != nil {
+			log.Println("Error Ready Parse:", err.Error())
+			return
+		}
+		if c.OnTypingStart != nil {
+			c.OnGuildMemberRemove(event, guildMemberEvent)
+		}
+	case "GUILD_ROLE_CREATE":
+		var guildRoleEvent GuildRoleEvent
+		err := json.Unmarshal(event.RawData, &guildRoleEvent)
+		if err != nil {
+			log.Println("Error Ready Parse:", err.Error())
+			return
+		}
+		if c.OnTypingStart != nil {
+			c.OnGuildRoleCreate(event, guildRoleEvent)
+		}
+	case "GUILD_ROLE_DELETE":
+		var guildRoleDeleteEvent GuildRoleDeleteEvent
+		err := json.Unmarshal(event.RawData, &guildRoleDeleteEvent)
+		if err != nil {
+			log.Println("Error Ready Parse:", err.Error())
+			return
+		}
+		if c.OnTypingStart != nil {
+			c.OnGuildRoleDelete(event, guildRoleDeleteEvent)
+		}
+	case "GUILD_ROLE_UPDATE":
+		var guild Guild
+		err := json.Unmarshal(event.RawData, &guild)
+		if err != nil {
+			log.Println("Error Ready Parse:", err.Error())
+			return
+		}
+		if c.OnTypingStart != nil {
+			c.OnGuildRoleUpdate(event, guild)
+		}
+	case "GUILD_UPDATE":
+		var guild Guild
+		err := json.Unmarshal(event.RawData, &guild)
+		if err != nil {
+			log.Println("Error Ready Parse:", err.Error())
+			return
+		}
+		if c.OnTypingStart != nil {
+			c.OnGuildUpdate(event, guild)
+		}
 	case "TYPING_START":
 		var typingEvent TypingEvent
 		err := json.Unmarshal(event.RawData, &typingEvent)
@@ -86,6 +187,46 @@ func (c *Client) handleEvent(msgType int, msgData []byte) {
 		}
 		if c.OnMessageCreate != nil {
 			c.OnMessageCreate(event, message)
+		}
+	case "MESSAGE_UPDATE":
+		var message Message
+		err := json.Unmarshal(event.RawData, &message)
+		if err != nil {
+			log.Println("Error Message Parse:", err.Error())
+			return
+		}
+		if c.OnMessageCreate != nil {
+			c.OnMessageUpdate(event, message)
+		}
+	case "MESSAGE_DELETE":
+		var message Message
+		err := json.Unmarshal(event.RawData, &message)
+		if err != nil {
+			log.Println("Error Message Parse:", err.Error())
+			return
+		}
+		if c.OnMessageCreate != nil {
+			c.OnMessageDelete(event, message)
+		}
+	case "USER_SETTINGS_UPDATE":
+		var userSettings UserSettings
+		err := json.Unmarshal(event.RawData, &userSettings)
+		if err != nil {
+			log.Println("Error Message Parse:", err.Error())
+			return
+		}
+		if c.OnMessageCreate != nil {
+			c.OnUserSettingsUpdate(event, userSettings)
+		}
+	case "VOICE_STATE_UPDATE":
+		var voiceState VoiceState
+		err := json.Unmarshal(event.RawData, &voiceState)
+		if err != nil {
+			log.Println("Error Message Parse:", err.Error())
+			return
+		}
+		if c.OnMessageCreate != nil {
+			c.OnVoiceStateUpdate(event, voiceState)
 		}
 	default:
 		log.Printf("Ignoring %s", event.Type)
