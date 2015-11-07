@@ -1,5 +1,5 @@
 language: go
 go: 1.5
 install:
-  - go get github.com/gorilla/websocket
+  - go get github.com/xackery/discord
   - go get -v .
