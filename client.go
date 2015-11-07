@@ -2,12 +2,18 @@ package discord
 
 import (
 	"errors"
+	"github.com/gorilla/websocket"
 )
 
 //Client wrapper for Discord
 type Client struct {
-	Id    string
-	Token string
+	User
+	Token           string
+	GatewayURL      string `json:"url"`
+	wsConn          *websocket.Conn
+	Guilds          []Guild
+	PrivateChannel  []PrivateChannel
+	OnMessageCreate func(Message)
 }
 
 //Login Method for Discord
@@ -31,6 +37,6 @@ func (c *Client) Login(email string, pass string) (err error) {
 }
 
 //Checks if client IsLoggedIn to discord
-func (c Client) IsLoggedIn() (isLoggedIn bool) {
+func (c *Client) IsLoggedIn() (isLoggedIn bool) {
 	return c.Token != ""
 }

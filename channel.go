@@ -23,6 +23,13 @@ type Channel struct {
 	IsPrivate            bool
 }
 
+//Private Channels between two users
+type PrivateChannel struct {
+	ID            string `json:"id"`
+	Recipient     User   `json:"recipient"`
+	LastMessageID string `json:"last_message_id"`
+}
+
 //Channel setting regarding if a permission overwrites
 type PermissionOverWrites struct {
 }

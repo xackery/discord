@@ -10,6 +10,15 @@ import (
 	"time"
 )
 
+type User struct {
+	ID            int `json:"id,string"`
+	Username      string
+	Email         string
+	Verified      bool
+	Avatar        string
+	Discriminator int `json:"string"`
+}
+
 //Fetch information about user logged in (me)
 func (c *Client) UserMe() (err error) {
 	if !c.IsLoggedIn() {
@@ -36,7 +45,6 @@ func (c *Client) UserMe() (err error) {
 		return
 	}
 	resp.Body.Close()
-
 	if resp.StatusCode != 200 {
 		err = fmt.Errorf("StatusCode: %d, %s", resp.StatusCode, string(body))
 		return
@@ -52,8 +60,7 @@ func (c Client) UserGuilds() (guilds []Guild, err error) {
 		return
 	}
 	httpClient := &http.Client{Timeout: (20 * time.Second)}
-
-	req, err := http.NewRequest("GET", fmt.Sprintf("%s/%s", DISCORD_URL, fmt.Sprintf("users/%s/guilds", c.Id)), bytes.NewBuffer([]byte(fmt.Sprintf(``))))
+	req, err := http.NewRequest("GET", fmt.Sprintf("%s/%s", DISCORD_URL, fmt.Sprintf("users/%d/guilds", c.ID)), bytes.NewBuffer([]byte(fmt.Sprintf(``))))
 	if err != nil {
 		return
 	}
