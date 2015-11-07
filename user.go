@@ -64,7 +64,6 @@ func (c Client) UserGuilds() (guilds []Guild, err error) {
 
 	body, err := ioutil.ReadAll(resp.Body)
 	resp.Body.Close()
-	fmt.Println(string(body))
 
 	if err != nil {
 		return
