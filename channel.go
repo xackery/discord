@@ -10,44 +10,31 @@ import (
 	"time"
 )
 
-type Mention struct {
-}
-
-type Attachment struct {
-}
-
-type Embed struct {
-}
-
-type Author struct {
-	Username      string
-	Discriminator int `json:",string"`
-	Id            int `json:",string"`
-	Avatar        string
-}
-
+//Channels are sections inside guilds that messages are grouped by
 type Channel struct {
-	GuildId              int `json:",string,omitempty"`
+	GuildID              int `json:",string,omitempty"`
 	Name                 string
-	PermissionOverWrites []PermissionOverwrites `json:"permission_overwrites,omitempty"`
+	PermissionOverWrites []PermissionOverWrites `json:"permission_overwrites,omitempty"`
 	Topic                string
 	Position             int `json:",omitempty"`
-	LastMessageId        string
+	LastMessageID        string
 	Type                 string
 	Id                   int `json:",string,omitempty"`
 	IsPrivate            bool
 }
 
-type PermissionOverwrites struct {
+//Channel setting regarding if a permission overwrites
+type PermissionOverWrites struct {
 }
 
+//Posted message inside a channel
 type Message struct {
 	Attachments     []Attachment
 	Tts             bool
 	Embeds          []Embed
 	Timestamp       string
 	MentionEveryone bool
-	Id              int `json:",string,omitempty"`
+	ID              int `json:",string,omitempty"`
 	EditedTimestamp string
 	Author          *Author
 	Content         string
@@ -55,6 +42,27 @@ type Message struct {
 	Mentions        []Mention
 }
 
+//Mentions are @user inside a message
+type Mention struct {
+}
+
+//Attachment array entry
+type Attachment struct {
+}
+
+//Embedded media array entry
+type Embed struct {
+}
+
+//An author of a message
+type Author struct {
+	Username      string
+	Discriminator int `json:",string"`
+	ID            int `json:",string"`
+	Avatar        string
+}
+
+//Send a message to specified channel
 func (c Client) ChannelMessageSend(channelId int, messageText string) (responseMessage Message, err error) {
 	if !c.IsLoggedIn() {
 		err = errors.New("You must be logged in")
@@ -79,7 +87,7 @@ func (c Client) ChannelMessageSend(channelId int, messageText string) (responseM
 	resp.Body.Close()
 
 	if resp.StatusCode != 200 {
-		err = errors.New(fmt.Sprintf("StatusCode: %d, %s", resp.StatusCode, string(body)))
+		err = fmt.Errorf("StatusCode: %d, %s", resp.StatusCode, string(body)))
 		return
 	}
 

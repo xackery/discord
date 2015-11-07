@@ -4,12 +4,13 @@ import (
 	"errors"
 )
 
+//Client wrapper for Discord
 type Client struct {
 	Id    string
 	Token string
 }
 
-//Log in to Discord
+//Login Method for Discord
 func (c *Client) Login(email string, pass string) (err error) {
 	if len(email) < 3 {
 		err = errors.New("email too short")
@@ -29,7 +30,7 @@ func (c *Client) Login(email string, pass string) (err error) {
 	return
 }
 
-//Check if client is logged in to discord
+//Checks if client IsLoggedIn to discord
 func (c Client) IsLoggedIn() (isLoggedIn bool) {
 	return c.Token != ""
 }

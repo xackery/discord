@@ -10,6 +10,7 @@ import (
 	"time"
 )
 
+//A guild are basically servers on Discord
 type Guild struct {
 	AfkTimeout     int
 	JoinedAt       string
@@ -24,6 +25,7 @@ type Guild struct {
 	OwnerID        int `json:",string,omitempty"`
 }
 
+//Roles are permission groupings
 type Role struct {
 	Managed     bool
 	Name        string
@@ -34,6 +36,7 @@ type Role struct {
 	Permissions int
 }
 
+//List channels found on given guildId
 func (c *Client) GuildChannels(guildId int) (channels []Channel, err error) {
 	if !c.IsLoggedIn() {
 		err = errors.New("You must be logged in")

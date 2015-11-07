@@ -26,7 +26,7 @@ func (c *Client) authLogin(email string, pass string) (err error) {
 	}
 
 	if resp.StatusCode != 200 {
-		err = errors.New(fmt.Sprintf("StatusCode: %d, %s", resp.StatusCode, string(body)))
+		err = fmt.Errorf("StatusCode: %d, %s", resp.StatusCode, string(body))
 		return
 	}
 	err = json.Unmarshal(body, &c)
@@ -61,7 +61,7 @@ func (c *Client) authLogout() (err error) {
 	resp.Body.Close()
 
 	if resp.StatusCode != 204 && resp.StatusCode != 200 {
-		err = errors.New(fmt.Sprintf("StatusCode: %d, %s", resp.StatusCode, string(body)))
+		err = fmt.Errorf("StatusCode: %d, %s", resp.StatusCode, string(body))
 		return
 	}
 	return

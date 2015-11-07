@@ -10,6 +10,7 @@ import (
 	"time"
 )
 
+//Fetch information about user logged in (me)
 func (c *Client) UserMe() (err error) {
 	if !c.IsLoggedIn() {
 		err = errors.New("You must be logged in")
@@ -37,13 +38,14 @@ func (c *Client) UserMe() (err error) {
 	resp.Body.Close()
 
 	if resp.StatusCode != 200 {
-		err = errors.New(fmt.Sprintf("StatusCode: %d, %s", resp.StatusCode, string(body)))
+		err = fmt.Errorf("StatusCode: %d, %s", resp.StatusCode, string(body)))
 		return
 	}
 	err = json.Unmarshal(body, &c)
 	return
 }
 
+//Get a list of guilds for current logged in user
 func (c Client) UserGuilds() (guilds []Guild, err error) {
 	if !c.IsLoggedIn() {
 		err = errors.New("You must be logged in")
@@ -70,7 +72,7 @@ func (c Client) UserGuilds() (guilds []Guild, err error) {
 	}
 
 	if resp.StatusCode != 200 {
-		err = errors.New(fmt.Sprintf("StatusCode: %d, %s", resp.StatusCode, string(body)))
+		err = fmt.Errorf("StatusCode: %d, %s", resp.StatusCode, string(body)))
 		return
 	}
 
