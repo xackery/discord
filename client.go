@@ -8,12 +8,16 @@ import (
 //Client wrapper for Discord
 type Client struct {
 	User
-	Token           string
-	GatewayURL      string `json:"url"`
-	wsConn          *websocket.Conn
-	Guilds          []Guild
-	PrivateChannel  []PrivateChannel
-	OnMessageCreate func(Message)
+	Token            string
+	GatewayURL       string `json:"url"`
+	wsConn           *websocket.Conn
+	Guilds           []Guild
+	PrivateChannel   []PrivateChannel
+	OnReady          func(Event, Ready)
+	OnTypingStart    func(Event, TypingEvent)
+	OnMessageCreate  func(Event, Message)
+	OnPresenceStart  func(Event, Presence)
+	OnPresenceUpdate func(Event, Presence)
 }
 
 //Login Method for Discord
