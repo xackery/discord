@@ -8,17 +8,31 @@ import (
 //Client wraps all Discord methods
 type Client struct {
 	User
-	Token            string
-	GatewayURL       string `json:"url"`
-	wsConn           *websocket.Conn
-	Guilds           []Guild
-	PrivateChannel   []PrivateChannel
-	OnReady          func(Event, Ready)
-	OnTypingStart    func(Event, TypingEvent)
-	OnMessageCreate  func(Event, Message)
-	OnPresenceStart  func(Event, Presence)
-	OnPresenceUpdate func(Event, Presence)
-	isListening      bool
+	Token                     string
+	GatewayURL                string `json:"url"`
+	wsConn                    *websocket.Conn
+	Guilds                    []Guild
+	PrivateChannel            []PrivateChannel
+	OnReady                   func(Event, Ready)
+	OnTypingStart             func(Event, TypingEvent)
+	OnMessageCreate           func(Event, Message)
+	OnMessageUpdate           func(Event, Message)
+	OnMessageDelete           func(Event, Message)
+	OnPresenceStart           func(Event, Presence)
+	OnPresenceUpdate          func(Event, Presence)
+	OnUserSettingsUpdate      func(Event, UserSettings)
+	OnGuildCreate             func(Event, GuildCreateEvent)
+	OnGuildUpdate             func(Event, Guild)
+	OnGuildDelete             func(Event, GuildDeleteEvent)
+	OnGuildIntegrationsUpdate func(Event, GuildMemberEvent)
+	OnGuildMemberAdd          func(Event, GuildMemberEvent)
+	OnGuildMemberUpdate       func(Event, GuildMemberEvent)
+	OnGuildMemberRemove       func(Event, GuildMemberEvent)
+	OnGuildRoleDelete         func(Event, GuildRoleDeleteEvent)
+	OnGuildRoleUpdate         func(Event, Guild)
+	OnGuildRoleCreate         func(Event, GuildRoleEvent)
+	OnVoiceStateUpdate        func(Event, VoiceState)
+	isListening               bool
 }
 
 //Login Method for Discord
