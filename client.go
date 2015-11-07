@@ -5,7 +5,7 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-//Client wrapper for Discord
+//Client wraps all Discord methods
 type Client struct {
 	User
 	Token            string
@@ -22,6 +22,8 @@ type Client struct {
 
 //Login Method for Discord
 func (c *Client) Login(email string, pass string) (err error) {
+
+	//Basic validation
 	if len(email) < 3 {
 		err = errors.New("email too short")
 		return
@@ -30,17 +32,19 @@ func (c *Client) Login(email string, pass string) (err error) {
 		err = errors.New("password too short")
 		return
 	}
+	//If user is not logged in, authorize and fetch a token
 	if !c.IsLoggedIn() {
 		err = c.authLogin(email, pass)
 		if err != nil {
 			return
 		}
 	}
+	//sets User data on client
 	c.UserMe()
 	return
 }
 
-//Checks if client IsLoggedIn to discord
+//IsLoggedIn returns if client is logged in to discord
 func (c *Client) IsLoggedIn() (isLoggedIn bool) {
 	return c.Token != ""
 }
