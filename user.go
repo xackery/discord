@@ -19,6 +19,14 @@ type User struct {
 	Discriminator int `json:"string"`
 }
 
+type UserSettings struct {
+	InlineAttachmentMedia bool
+	InlineEmbedMedia      bool
+	MutedChannels         []string
+	RenderEmbeds          bool
+	Theme                 string
+}
+
 //Fetch information about user logged in (me)
 func (c *Client) UserMe() (err error) {
 	if !c.IsLoggedIn() {
