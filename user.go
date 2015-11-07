@@ -38,7 +38,7 @@ func (c *Client) UserMe() (err error) {
 	resp.Body.Close()
 
 	if resp.StatusCode != 200 {
-		err = fmt.Errorf("StatusCode: %d, %s", resp.StatusCode, string(body)))
+		err = fmt.Errorf("StatusCode: %d, %s", resp.StatusCode, string(body))
 		return
 	}
 	err = json.Unmarshal(body, &c)
@@ -72,7 +72,7 @@ func (c Client) UserGuilds() (guilds []Guild, err error) {
 	}
 
 	if resp.StatusCode != 200 {
-		err = fmt.Errorf("StatusCode: %d, %s", resp.StatusCode, string(body)))
+		err = fmt.Errorf("StatusCode: %d, %s", resp.StatusCode, string(body))
 		return
 	}
 

@@ -87,7 +87,7 @@ func (c Client) ChannelMessageSend(channelId int, messageText string) (responseM
 	resp.Body.Close()
 
 	if resp.StatusCode != 200 {
-		err = fmt.Errorf("StatusCode: %d, %s", resp.StatusCode, string(body)))
+		err = fmt.Errorf("StatusCode: %d, %s", resp.StatusCode, string(body))
 		return
 	}
 
