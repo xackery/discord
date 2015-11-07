@@ -30,6 +30,34 @@ type Guild struct {
 	Channels       []Channel //Used by Websocket
 }
 
+type GuildMemberEvent struct {
+	JoinedAt string
+	GuildID  int `json:"guild_id,string"`
+	Roles    []Role
+	User     User
+}
+
+type GuildCreateEvent struct {
+	ID          string `json:"id,string"`
+	unavailable bool
+}
+
+type GuildDeleteEvent struct {
+	GuildCreateEvent
+}
+
+//GuildRole is used when a CRUD operation happens with roles in a guild
+type GuildRoleEvent struct {
+	GuildID int `json:"guild_id,string"`
+	Role    Role
+}
+
+//GuildRoleDelete is used when a delete roleevent occurs for guild
+type GuildRoleDeleteEvent struct {
+	GuildID int `json:"guild_id,string"`
+	RoleID  int `json:"role_id, string"`
+}
+
 //Roles are permission groupings
 type Role struct {
 	Managed     bool
