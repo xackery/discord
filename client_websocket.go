@@ -75,75 +75,98 @@ func (c *Client) Listen() (err error) {
 }
 
 type Event struct {
+	Type      string          `json:"t"`
+	State     int             `json:"s"`
+	Operation int             `json:"o"`
+	RawData   json.RawMessage `json:"d"`
+}
+
+type Ready struct {
+	Version           int `json:"v"`
+	User              User
+	SessionID         string
+	ReadState         []ReadState
+	PrivateChannels   []PrivateChannel
+	HeartbeatInterval time.Duration `json:"heartbeat_interval"`
+	Guilds            []Guild
+}
+
+type ReadState struct {
+	MentionCount  int
+	LastMessageID int `json:"string"`
+	ID            int `json:"string"`
 }
 
 func (c *Client) handleEvent(msgType int, msgData []byte) {
-	var event interface{}
-	err := bson.Unmarshal(msgData, &event)
+	var event Event
+	err := json.Unmarshal(msgData, &event)
 	if err != nil {
+		log.Println("Err HandleEvent:", err.Error())
 		return
 	}
 
-	eventType := event.(map[string]interface{})["t"].(string)
-
-	switch eventType {
-	//case "READY":
-	//	c.handleReady(msgData)
-	case "MESSAGE_CREATE":
-		c.handleMessageCreate(msgData)
-	/*case "MESSAGE_ACK":
-		c.handleMessageAck(msgData)
-	case "MESSAGE_UPDATE":
-		c.handleMessageUpdate(msgData)
-	case "MESSAGE_DELETE":
-		c.handleMessageDelete(msgData)
+	//eventType := event.(map[string]interface{})["t"].(string)
+	switch event.Type {
+	case "READY":
+		var ready Ready
+		err := json.Unmarshal(event.RawData, &ready)
+		if err != nil {
+			log.Println("Error Ready Parse:", err.Error())
+			return
+		}
+		log.Println("Size of guilds:", len(ready.Guilds), "members:", len(ready.Guilds[0].Members))
+		c.handleReady(event, ready)
 	case "TYPING_START":
-		c.handleTypingStart(msgData)
+		var typingEvent TypingEvent
+		err := json.Unmarshal(event.RawData, &typingEvent)
+		if err != nil {
+			log.Println("Error Typing Parse:", err.Error())
+			return
+		}
+		if c.OnTypingStart != nil {
+			c.OnTypingStart(event, typingEvent)
+		}
+	case "PRESENCE_START":
+		var presence Presence
+		err := json.Unmarshal(event.RawData, &presence)
+		if err != nil {
+			log.Println("Error Presence Parse:", err.Error())
+			return
+		}
+		if c.OnPresenceStart != nil {
+			c.OnPresenceStart(event, presence)
+		}
 	case "PRESENCE_UPDATE":
-		c.handlePresenceUpdate(msgData)
-	case "CHANNEL_CREATE":
-		c.handleChannelCreate(msgData)
-	case "CHANNEL_UPDATE":
-		c.handleChannelUpdate(msgData)
-	case "CHANNEL_DELETE":
-		c.handleChannelDelete(msgData)
-	case "GUILD_CREATE":
-		c.handleGuildCreate(msgData)
-	case "GUILD_DELETE":
-		c.handleGuildDelete(msgData)
-	*/
+		var presence Presence
+		err := json.Unmarshal(event.RawData, &presence)
+		if err != nil {
+			log.Println("Error Presence Parse:", err.Error())
+			return
+		}
+		if c.OnPresenceStart != nil {
+			c.OnPresenceUpdate(event, presence)
+		}
+	case "MESSAGE_CREATE":
+		var message Message
+		err := json.Unmarshal(event.RawData, &message)
+		if err != nil {
+			log.Println("Error Message Parse:", err.Error())
+			return
+		}
+		if c.OnMessageCreate != nil {
+			c.OnMessageCreate(event, message)
+		}
 	default:
-
-		log.Printf("Ignoring %s", eventType)
+		log.Printf("Ignoring %s", event.Type)
 		log.Printf("event dump: %d %s", msgType, string(msgData[:]))
 	}
 }
 
-// Ready is received when the websocket connection is made and helps set up everything
-type Ready struct {
-	HeartbeatInterval time.Duration `json:"heartbeat_interval"`
-	Guilds            []Guild
-	PrivateChannels   []PrivateChannel
-}
-
-type readyEvent struct {
-	OpCode int    `json:"op"`
-	Type   string `json:"t"`
-	Data   Ready  `json:"d"`
-}
-
-func (c *Client) handleReady(eventStr []byte) {
-
-	log.Println("handleReady")
-	var ready readyEvent
-	if err := json.Unmarshal(eventStr, &ready); err != nil {
-		log.Printf("handleReady: %s", err)
-		return
-	}
+func (c *Client) handleReady(event Event, ready Ready) {
 
 	// WebSocket keepalive
 	go func() {
-		ticker := time.NewTicker(ready.Data.HeartbeatInterval * time.Millisecond)
+		ticker := time.NewTicker(ready.HeartbeatInterval * time.Millisecond)
 		for range ticker.C {
 			timestamp := int(time.Now().Unix())
 			log.Printf("Sending keepalive with timestamp %d", timestamp)
@@ -154,40 +177,15 @@ func (c *Client) handleReady(eventStr []byte) {
 		}
 	}()
 
-	//c.User = ready.Data.User
-	//c.initServers(ready.Data)
-
-	/*if c.OnReady == nil {
-		log.Print("No handler for READY")
-	} else {
-		log.Print("Client ready, calling OnReady handler")
-		c.OnReady(ready.Data)
-	}*/
+	if c.OnReady != nil {
+		c.OnReady(event, ready)
+	}
 }
 
 type messageEvent struct {
 	OpCode int     `json:"op"`
 	Type   string  `json:"t"`
 	Data   Message `json:"d"`
-}
-
-func (c *Client) handleMessageCreate(msgData []byte) {
-	if c.OnMessageCreate == nil {
-		log.Print("No handler for MESSAGE_CREATE")
-		return
-	}
-
-	var message messageEvent
-	if err := json.Unmarshal(msgData, &message); err != nil {
-		log.Printf("messageCreate: %s", err)
-		return
-	}
-
-	if message.Data.Author.ID != c.ID {
-		c.OnMessageCreate(message.Data)
-	} else {
-		log.Print("Ignoring message from self")
-	}
 }
 
 //Initialize the websocket
