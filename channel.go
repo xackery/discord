@@ -27,14 +27,18 @@ type Author struct {
 }
 
 type Channel struct {
-	Guild_id              int `json:",string"`
-	Name                  string
-	Permission_overwrites string
-	Position              int `json:",string"`
-	Last_message_id       string
-	Type                  string
-	Id                    int `json:",string"`
-	Is_private            string
+	GuildId              int `json:",string,omitempty"`
+	Name                 string
+	PermissionOverWrites []PermissionOverwrites `json:"permission_overwrites,omitempty"`
+	Topic                string
+	Position             int `json:",omitempty"`
+	LastMessageId        string
+	Type                 string
+	Id                   int `json:",string,omitempty"`
+	IsPrivate            bool
+}
+
+type PermissionOverwrites struct {
 }
 
 type Message struct {
@@ -43,15 +47,15 @@ type Message struct {
 	Embeds           []Embed
 	Timestamp        string
 	Mention_everyone bool
-	Id               int `json:",string"`
+	Id               int `json:",string,omitempty"`
 	Edited_timestamp string
 	Author           *Author
 	Content          string
-	Channel_id       int `json:",string"`
+	Channel_id       int `json:",string,omitempty"`
 	Mentions         []Mention
 }
 
-func (c Client) SendMessage(channelId int, messageText string) (responseMessage Message, err error) {
+func (c Client) ChannelMessageSend(channelId int, messageText string) (responseMessage Message, err error) {
 	if !c.IsLoggedIn() {
 		err = errors.New("You must be logged in")
 		return
