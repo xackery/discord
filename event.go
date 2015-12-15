@@ -55,7 +55,7 @@ func (c *Client) handleEvent(msgType int, msgData []byte) {
 			log.Println("Error Ready Parse:", err.Error())
 			return
 		}
-		if c.OnTypingStart != nil {
+		if c.OnGuildCreate != nil {
 			c.OnGuildCreate(event, guildCreateEvent)
 		}
 	case "GUILD_DELETE":
@@ -65,7 +65,7 @@ func (c *Client) handleEvent(msgType int, msgData []byte) {
 			log.Println("Error Ready Parse:", err.Error())
 			return
 		}
-		if c.OnTypingStart != nil {
+		if c.OnGuildDelete != nil {
 			c.OnGuildDelete(event, guildDeleteEvent)
 		}
 	case "GUILD_INTEGRATIONS_UPDATE":
@@ -75,7 +75,7 @@ func (c *Client) handleEvent(msgType int, msgData []byte) {
 			log.Println("Error Ready Parse:", err.Error())
 			return
 		}
-		if c.OnTypingStart != nil {
+		if c.OnGuildIntegrationsUpdate != nil {
 			c.OnGuildIntegrationsUpdate(event, guildMemberEvent)
 		}
 	case "GUILD_MEMBER_ADD":
@@ -85,7 +85,7 @@ func (c *Client) handleEvent(msgType int, msgData []byte) {
 			log.Println("Error Ready Parse:", err.Error())
 			return
 		}
-		if c.OnTypingStart != nil {
+		if c.OnGuildMemberAdd != nil {
 			c.OnGuildMemberAdd(event, guildMemberEvent)
 		}
 	case "GUILD_MEMBER_UPDATE":
@@ -95,7 +95,7 @@ func (c *Client) handleEvent(msgType int, msgData []byte) {
 			log.Println("Error Ready Parse:", err.Error())
 			return
 		}
-		if c.OnTypingStart != nil {
+		if c.OnGuildMemberUpdate != nil {
 			c.OnGuildMemberUpdate(event, guildMemberEvent)
 		}
 	case "GUILD_MEMBER_REMOVE":
@@ -105,7 +105,7 @@ func (c *Client) handleEvent(msgType int, msgData []byte) {
 			log.Println("Error Ready Parse:", err.Error())
 			return
 		}
-		if c.OnTypingStart != nil {
+		if c.OnGuildMemberRemove != nil {
 			c.OnGuildMemberRemove(event, guildMemberEvent)
 		}
 	case "GUILD_ROLE_CREATE":
@@ -115,7 +115,7 @@ func (c *Client) handleEvent(msgType int, msgData []byte) {
 			log.Println("Error Ready Parse:", err.Error())
 			return
 		}
-		if c.OnTypingStart != nil {
+		if c.OnGuildRoleCreate != nil {
 			c.OnGuildRoleCreate(event, guildRoleEvent)
 		}
 	case "GUILD_ROLE_DELETE":
@@ -125,7 +125,7 @@ func (c *Client) handleEvent(msgType int, msgData []byte) {
 			log.Println("Error Ready Parse:", err.Error())
 			return
 		}
-		if c.OnTypingStart != nil {
+		if c.OnGuildRoleDelete != nil {
 			c.OnGuildRoleDelete(event, guildRoleDeleteEvent)
 		}
 	case "GUILD_ROLE_UPDATE":
@@ -135,7 +135,7 @@ func (c *Client) handleEvent(msgType int, msgData []byte) {
 			log.Println("Error Ready Parse:", err.Error())
 			return
 		}
-		if c.OnTypingStart != nil {
+		if c.OnGuildRoleUpdate != nil {
 			c.OnGuildRoleUpdate(event, guild)
 		}
 	case "GUILD_UPDATE":
@@ -145,7 +145,7 @@ func (c *Client) handleEvent(msgType int, msgData []byte) {
 			log.Println("Error Ready Parse:", err.Error())
 			return
 		}
-		if c.OnTypingStart != nil {
+		if c.OnGuildUpdate != nil {
 			c.OnGuildUpdate(event, guild)
 		}
 	case "TYPING_START":
@@ -175,7 +175,7 @@ func (c *Client) handleEvent(msgType int, msgData []byte) {
 			log.Println("Error Presence Parse:", err.Error())
 			return
 		}
-		if c.OnPresenceStart != nil {
+		if c.OnPresenceUpdate != nil {
 			c.OnPresenceUpdate(event, presence)
 		}
 	case "MESSAGE_CREATE":
@@ -195,7 +195,7 @@ func (c *Client) handleEvent(msgType int, msgData []byte) {
 			log.Println("Error Message Parse:", err.Error())
 			return
 		}
-		if c.OnMessageCreate != nil {
+		if c.OnMessageUpdate != nil {
 			c.OnMessageUpdate(event, message)
 		}
 	case "MESSAGE_DELETE":
@@ -205,7 +205,7 @@ func (c *Client) handleEvent(msgType int, msgData []byte) {
 			log.Println("Error Message Parse:", err.Error())
 			return
 		}
-		if c.OnMessageCreate != nil {
+		if c.OnMessageDelete != nil {
 			c.OnMessageDelete(event, message)
 		}
 	case "USER_SETTINGS_UPDATE":
@@ -215,7 +215,7 @@ func (c *Client) handleEvent(msgType int, msgData []byte) {
 			log.Println("Error Message Parse:", err.Error())
 			return
 		}
-		if c.OnMessageCreate != nil {
+		if c.OnUserSettingsUpdate != nil {
 			c.OnUserSettingsUpdate(event, userSettings)
 		}
 	case "VOICE_STATE_UPDATE":
@@ -225,7 +225,7 @@ func (c *Client) handleEvent(msgType int, msgData []byte) {
 			log.Println("Error Message Parse:", err.Error())
 			return
 		}
-		if c.OnMessageCreate != nil {
+		if c.OnVoiceStateUpdate != nil {
 			c.OnVoiceStateUpdate(event, voiceState)
 		}
 	default:
