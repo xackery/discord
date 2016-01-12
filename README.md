@@ -1,4 +1,4 @@
-# discord
+# discord - THIS IS NOW DEPRECATED
 A Discord API for Golang
 
 [![godoc badge](https://img.shields.io/badge/godoc-reference-blue.svg)](https://godoc.org/github.com/Xackery/discord) [![Go report](http://goreportcard.com/badge/xackery/discord)](http://goreportcard.com/report/xackery/discord) [![Build Status](https://travis-ci.org/Xackery/discord.svg)](https://travis-ci.org/Xackery/discord.svg?branch=master)
